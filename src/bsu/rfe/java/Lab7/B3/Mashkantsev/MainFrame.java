@@ -1,5 +1,7 @@
 package bsu.rfe.java.Lab7.B3.Mashkantsev;
 
+import javafx.scene.control.Hyperlink;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -49,9 +51,12 @@ public class MainFrame extends JFrame {
 
     private final JTextArea textAreaIncoming;
     private final JTextArea textAreaOutgoing;
+    private InstantMessenger refactoring;
+    private Peer client;
 
     public MainFrame() {
         super(FRAME_TITLE);
+        client = new Peer();
         setMinimumSize(
                 new Dimension(FRAME_MINIMUM_WIDTH, FRAME_MINIMUM_HEIGHT));
         // Центрирование окна
@@ -92,7 +97,9 @@ public class MainFrame extends JFrame {
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendMessage();
+                client.SetSender(textFieldFrom.getText());
+                client.SetdestinationAddress(textFieldTo.getText());
+                refactoring.sendMessage(textAreaOutgoing.getText(),client);
             }
         });
 
@@ -125,6 +132,7 @@ public class MainFrame extends JFrame {
                 .addGap(MEDIUM_GAP)
                 .addComponent(sendButton)
                 .addContainerGap());
+        refactoring = new InstantMessenger(this);
 
 // Компоновка элементов фрейма
         final GroupLayout layout1 = new GroupLayout(getContentPane());
@@ -185,68 +193,16 @@ public class MainFrame extends JFrame {
         }).start();
     }
 
-    private void sendMessage() {
-        try {
-// Получаем необходимые параметры
-            final String senderName = textFieldFrom.getText();
-            final String destinationAddress = textFieldTo.getText();
-            final String message = textAreaOutgoing.getText();
-
-// Убеждаемся, что поля не пустые
-            if (senderName.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Введите имя отправителя", "Ошибка",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (destinationAddress.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Введите адрес узла-получателя", "Ошибка",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (message.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Введите текст сообщения", "Ошибка",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-// Создаем сокет для соединения
-            final Socket socket =
-                    new Socket(destinationAddress, SERVER_PORT);
-
-// Открываем поток вывода данных
-            final DataOutputStream out =
-                    new DataOutputStream(socket.getOutputStream());
-
-// Записываем в поток имя
-            out.writeUTF(senderName);
-
-// Записываем в поток сообщение
-            out.writeUTF(message);
-
-// Закрываем сокет
-            socket.close();
-
-// Помещаем сообщения в текстовую область вывода
-            textAreaIncoming.append("Я -> " + destinationAddress + ": "
-                    + message + "\n");
-
-// Очищаем текстовую область ввода сообщения
-            textAreaOutgoing.setText("");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(MainFrame.this,
-                    "Не удалось отправить сообщение: узел-адресат не найден",
-                    "Ошибка", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(MainFrame.this,
-                    "Не удалось отправить сообщение", "Ошибка",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+    public JTextArea getTextAreaOutgoing() {
+        return textAreaOutgoing;
     }
+    public int getServerPort() {
+        return SERVER_PORT;
+    }
+    public JTextArea getTextAreaIncoming() {
+        return textAreaIncoming;
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
