@@ -1,12 +1,6 @@
 package bsu.rfe.java.Lab7.B3.Mashkantsev;
 
 
-import javax.swing.*;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 public class Peer {
     private  String sender;
     private  String destinationAddress;

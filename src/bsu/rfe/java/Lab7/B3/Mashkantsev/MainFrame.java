@@ -1,18 +1,14 @@
 package bsu.rfe.java.Lab7.B3.Mashkantsev;
 
-import javafx.scene.control.Hyperlink;
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -149,48 +145,7 @@ public class MainFrame extends JFrame {
                 .addGap(MEDIUM_GAP)
                 .addComponent(messagePanel)
                 .addContainerGap());
-
-// Создание и запуск потока-обработчика запросов
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final ServerSocket serverSocket =
-                            new ServerSocket(SERVER_PORT);
-                    while (!Thread.interrupted()) {
-                        final Socket socket = serverSocket.accept();
-                        final DataInputStream in = new DataInputStream(
-                                socket.getInputStream());
-
-// Читаем имя отправителя
-                        final String senderName = in.readUTF();
-
-// Читаем сообщение
-                        final String message = in.readUTF();
-
-// Закрываем соединение
-                        socket.close();
-
-// Выделяем IP-адрес
-                        final String address =
-                                ((InetSocketAddress) socket
-                                        .getRemoteSocketAddress())
-                                        .getAddress()
-                                        .getHostAddress();
-
-// Выводим сообщение в текстовую область
-                        textAreaIncoming.append(senderName +
-                                " (" + address + "): " +
-                                message + "\n");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(MainFrame.this,
-                            "Ошибка в работе сервера", "Ошибка",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }).start();
+        
     }
 
     public JTextArea getTextAreaOutgoing() {
