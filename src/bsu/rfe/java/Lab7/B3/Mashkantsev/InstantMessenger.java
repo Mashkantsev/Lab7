@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class InstantMessenger {
     private String sender;
     private MainFrame frame;
+    private String message;
     ArrayList<MessageListener> listeners = new ArrayList<MessageListener>();
 
 
@@ -49,8 +50,7 @@ public class InstantMessenger {
             out.writeUTF(message);
             // Закрываем сокет
             socket.close();
-            // Помещаем сообщения в текстовую область вывода
-            frame.getTextAreaIncoming().append("Я -> " +sender.GetdestinationAddress() + ": " + message + "\n");
+            frame.appendMessage("Я -> "+ sender.GetdestinationAddress() + ": " + message);
             // Очищаем текстовую область ввода сообщения
             frame.getTextAreaOutgoing().setText("");
         }catch(UnknownHostException e) {
@@ -84,7 +84,7 @@ public class InstantMessenger {
                                 .getAddress()
                                 .getHostAddress();
                         // Выводим сообщение в текстовую область
-                        frame.getTextAreaIncoming().append(senderName +  " ("   + address + "): " +  message + "\n");
+                        frame.appendMessage(senderName +  " ("   + address + "): " +  message);
                     }
                 } catch(IOException e) {
                     e.printStackTrace(); JOptionPane.showMessageDialog(frame,
