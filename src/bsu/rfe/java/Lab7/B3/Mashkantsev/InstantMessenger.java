@@ -40,6 +40,7 @@ public class InstantMessenger {
                     "Введите текст сообщения", "Ошибка", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+           // frame.appendMessage("Я -> "+ sender.GetdestinationAddress() + ": " + message);
             // Создаем сокет для соединения
             final Socket socket =  new Socket(sender.GetdestinationAddress(), frame.getServerPort());
             // Открываем поток вывода данных
@@ -84,7 +85,7 @@ public class InstantMessenger {
                                 .getAddress()
                                 .getHostAddress();
                         // Выводим сообщение в текстовую область
-                        frame.appendMessage(senderName +  " ("   + address + "): " +  message);
+                        frame.appendMessage_2(message, senderName,address);
                     }
                 } catch(IOException e) {
                     e.printStackTrace(); JOptionPane.showMessageDialog(frame,

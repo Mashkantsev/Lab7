@@ -1,11 +1,15 @@
 package bsu.rfe.java.Lab7.B3.Mashkantsev;
 
+import javafx.scene.control.Hyperlink;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
@@ -41,7 +45,7 @@ public class MainFrame extends JFrame {
 
         // Текстовая область для отображения полученных сообщений
         textAreaIncoming = new JEditorPane();
-        textAreaIncoming.setContentType("text/html"); // enable html
+        textAreaIncoming.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
         textAreaIncoming.setEditable(false);
 
         setMinimumSize(
@@ -145,7 +149,25 @@ public class MainFrame extends JFrame {
         return textAreaIncoming;
     }
 
-    public void appendMessage(String text){
+    public synchronized void appendMessage(String text){
         textAreaIncoming.setText(text);
+    }
+    public synchronized void appendMessage_2(String text, String sender, String address){
+        Hyperlink link = new Hyperlink();
+        link.setText(sender);
+        link.setOnAction(e -> {
+            System.out.println("This link is clicked");
+        });
+        //text = "<a href = https://edurfe.bsu.by/course/view.php?id=35>sender</a>" + "(" + address + ")" + text;
+        //text = sender + "(" + link + ")" + text;
+        textAreaIncoming.addHyperlinkListener(new HyperlinkListener() {
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    textAreaOutgoing.setText(address);
+                }
+            }
+        });
+        textAreaIncoming.setText("<a href = address>sender</a>");
+
     }
 }
